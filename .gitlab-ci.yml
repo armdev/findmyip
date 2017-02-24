@@ -20,21 +20,19 @@ quality :
 
     script:
     -  chmod 755 gradlew
-    - ./gradlew  assemble${Environment}Debug                          # generate the build (Environment - PROD,STG,DEV)
-    - ./gradlew  --stacktrace assemble count${Environment}DebugDexMethods                   # generate the Dex Count (Environment - PROD,STG,DEV)
-    - ./gradlew  lint${Environment}Debug                              # command to execute the lint
-    - ./gradlew  --stacktrace assemble customfindbugs               # command to execute the findbug
-    - ./gradlew  --stacktrace assemble pmd
-    - ./gradlew  --stacktrace assemble checkstyle                   # command to execute the checkstyle
+    - ./gradlew  assembleDEVDebug                          # generate the build (Environment - PROD,STG,DEV)
+    - ./gradlew  countDEVDebugDexMethods                   # generate the Dex Count (Environment - PROD,STG,DEV)
+    - ./gradlew  lintDEVDebug                              # command to execute the lint
+    - ./gradlew  customfindbugs               # command to execute the findbug
+    - ./gradlew  pmd
+    - ./gradlew  checkstyle                   # command to execute the checkstyle
     artifacts:
       paths:
-      - app/build/outputs/dexcount/${Environment}Debug.txt           # path dexcount result
+      - app/build/outputs/dexcount/DEVDebug.txt           # path dexcount result
       - app/build/outputs/findbugs/findbugs.html                     # path findbugs result
       - app/build/outputs/checkstyle/checkstyle.html                 # path checkstyle result
       - app/build/outputs/pmd/pmd.html                               # path pmd result
 
-      name: "$CI_BUILD_NAME $(date +%F)"                             # Download file name eg - 'quality_2017-01-13.zip'
-      expire_in: 1 month                                             # Uploaded artifacts get deleted after 1 month
 
 build :
     stage: build
