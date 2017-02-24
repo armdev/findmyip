@@ -1,0 +1,48 @@
+image: jangrewe/gitlab-ci-android
+
+stages:
+  - quality                                                          # 1. Stage for Quality - Lint ,checkstyle ,PMD ,Findbug
+  - build
+
+#before_script:
+#- export GRADLE_USER_HOME=$(pwd)/.gradle
+#- chmod +x ./gradlew
+
+cache:
+  key: ${CI_PROJECT_ID}
+  paths:
+  - .gradle/
+
+
+quality :
+    stage: quality                                                   # 1. stage Quality
+    environment: "$Environment"
+
+    script:
+    -  chmod 755 gradlew
+    - ./gradlew  assemble${Environment}Debug                          # generate the build (Environment - PROD,STG,DEV)
+    - ./gradlew  --stacktrace assemble count${Environment}DebugDexMethods                   # generate the Dex Count (Environment - PROD,STG,DEV)
+    - ./gradlew  lint${Environment}Debug                              # command to execute the lint
+    - ./gradlew  --stacktrace assemble customfindbugs               # command to execute the findbug
+    - ./gradlew  --stacktrace assemble pmd
+    - ./gradlew  --stacktrace assemble checkstyle                   # command to execute the checkstyle
+    artifacts:
+      paths:
+      - app/build/outputs/dexcount/${Environment}Debug.txt           # path dexcount result
+      - app/build/outputs/findbugs/findbugs.html                     # path findbugs result
+      - app/build/outputs/checkstyle/checkstyle.html                 # path checkstyle result
+      - app/build/outputs/pmd/pmd.html                               # path pmd result
+
+      name: "$CI_BUILD_NAME $(date +%F)"                             # Download file name eg - 'quality_2017-01-13.zip'
+      expire_in: 1 month                                             # Uploaded artifacts get deleted after 1 month
+
+build :
+    stage: build
+
+    script:
+    - chmod 755 gradlew
+    - ./gradlew clean
+    - ./gradlew assembledebug
+    artifacts:
+        paths:
+        - app/build/outputs/apk/app-debug.apk

@@ -1,0 +1,54 @@
+apply plugin: "findbugs"
+apply plugin: "pmd"
+apply plugin: "checkstyle"
+apply plugin: "com.getkeepsafe.dexcount"
+
+task customfindbugs(type: FindBugs) {
+    ignoreFailures = false
+    effort = "max"
+    reportLevel = "low"
+    classes = files("$project.buildDir/intermediates/classes")
+    excludeFilter = file("$rootProject.rootDir/findbug-exclude.xml")
+    source = fileTree("src/main/java/")
+    classpath = files()
+    reports {
+        xml.enabled = false
+        xml.withMessages = true
+        html.enabled = !xml.isEnabled()
+        xml.destination "$project.buildDir/outputs/findbugs/findbugs.xml"
+        html.destination "$project.buildDir/outputs/findbugs/findbugs.html"
+    }
+}
+
+task pmd (type: Pmd) {
+    ignoreFailures = true
+    description "Run pmd"
+    group "verification"
+    ruleSets = ["java-basic", "java-braces", "java-strings", "java-design", "java-unusedcode"]
+    source = fileTree("src/main/java")
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+
+task checkstyle(type: Checkstyle) {
+    configFile = rootProject.file("checkstyle.xml")
+    source "src/main/java"
+    include "**/*.java"
+    exclude "**/gen/**"
+    ignoreFailures = true
+    classpath = files()
+}
+
+dexcount {
+    format = "list"
+    includeClasses = false
+    includeFieldCount = true
+    includeTotalMethodCount = false
+    orderByMethodCount = false
+    verbose = false
+    maxTreeDepth = Integer.MAX_VALUE
+    teamCityIntegration = false
+    enableForInstantRun = false
+}

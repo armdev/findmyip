@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">PingCenter</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_sport">SportActivity</string>
+    <string name="title_activity_send">SendActivity</string>
+    <string name="appbar_scrolling_view_behavior">appbar_scrolling_view_behavior</string>
+    <string name="email">E-mail: </string>
+    <string name="username">Username: </string>
+    <string name="home">To Home Page</string>
+    <string name="send">Send</string>
+    <string name="fetchip">Fetch My Ip</string>
+    <string name="welcome">Welcome To the Ping Center</string>
+</resources>
