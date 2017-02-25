@@ -1,11 +1,27 @@
-image: registry.gitlab.com/greysonp/gitlab-ci-shared-runner-android-example:latest
+image: jangrewe/gitlab-ci-android
+
+stages:
+- quality
+- build
 
 before_script:
-  - chmod +x ./gradlew
+- export GRADLE_USER_HOME=$(pwd)/.gradle
+- chmod +x ./gradlew
+
+cache:
+  key: ${CI_PROJECT_ID}
+  paths:
+  - .gradle/
+
+quality:
+  stage: quality
+  script:
+  - ./gradlew customfindbugs
 
 build:
+  stage: build
   script:
-    - ./gradlew assembleDebug
+  - ./gradlew assembleDebug
   artifacts:
     paths:
-    - app/build/outputs/
+    - app/build/outputs/apk/app-debug.apk
