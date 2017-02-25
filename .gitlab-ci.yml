@@ -13,15 +13,31 @@ cache:
   paths:
   - .gradle/
 
-quality:
-  stage: quality
-  script:
-  - ./gradlew customfindbugs
+quality :
+    stage: quality                                                   # 1. stage Quality
+    environment: "$Environment"
+    script:
+    -  chmod 755 gradlew
+    - ./gradlew  assemble${Environment}Debug                          # generate the build (Environment - PROD,STG,DEV)
+    - ./gradlew  --stacktrace assemble customfindbugs               # command to execute the findbug
+    - ./gradlew  --stacktrace assemble pmd
+    - ./gradlew  --stacktrace assemble checkstyle                   # command to execute the checkstyle
+    artifacts:
+      paths:
+      - app/build/outputs/dexcount/${Environment}Debug.txt           # path dexcount result
+      - app/build/outputs/findbugs/findbugs.html                     # path findbugs result
+      - app/build/outputs/checkstyle/checkstyle.html                 # path checkstyle result
+      - app/build/outputs/pmd/pmd.html                               # path pmd result
 
-build:
-  stage: build
-  script:
-  - ./gradlew assembleDebug
-  artifacts:
-    paths:
-    - app/build/outputs/apk/app-debug.apk
+      name: "$CI_BUILD_NAME $(date +%F)"                             # Download file name eg - 'quality_2017-01-13.zip'
+      expire_in: 1 month                                             # Uploaded artifacts get deleted after 1 month
+
+build :
+    stage: build
+    script:
+    - chmod 755 gradlew
+    - ./gradlew clean
+    - ./gradlew assembledebug
+    artifacts:
+        paths:
+        - app/build/outputs/apk/app-debug.apk
