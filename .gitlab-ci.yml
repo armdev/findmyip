@@ -1,10 +1,11 @@
-build_image:
-  image: docker:git
-  services:
-  - docker:dind
+image: registry.gitlab.com/greysonp/gitlab-ci-shared-runner-android-example:latest
+
+before_script:
+  - chmod +x ./gradlew
+
+build:
   script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
-    - docker build -t registry.gitlab.com/greysonp/gitlab-ci-shared-runner-android-example .
-    - docker push registry.gitlab.com/greysonp/gitlab-ci-shared-runner-android-example:latest
-  only:
-    - ci-image
+    - ./gradlew assembleDebug
+  artifacts:
+    paths:
+    - app/build/outputs/
