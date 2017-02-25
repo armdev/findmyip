@@ -2,6 +2,7 @@ image: jangrewe/gitlab-ci-android
 
 stages:
 - quality
+- documentation                                                    # 2. javadoc documentation
 - build
 
 before_script:
@@ -33,6 +34,20 @@ quality :
 
       name: "$CI_BUILD_NAME $(date +%F)"                             # Download file name eg - 'quality_2017-01-13.zip'
       expire_in: 1 month                                             # Uploaded artifacts get deleted after 1 month
+
+
+documentation:
+    stage: documentation                                             # 2. documentation stage
+
+
+    script:
+    - javadoc -d ./javadoc -sourcepath app/src/main/java com.center.ping            # command to generate javadoc
+    artifacts:
+      paths:
+      - javadoc/*                                # artifacts path for javadoc
+
+      name: "$CI_BUILD_NAME $(date +%F)"         # Download file name eg - 'documentation_2017-01-13.zip'
+      expire_in: 1 month                         # Uploaded artifacts get deleted after 1 month
 
 build :
     stage: build
