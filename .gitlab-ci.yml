@@ -1,45 +1,27 @@
 image: jangrewe/gitlab-ci-android
 
 stages:
-  #- quality                                                          # 1. Stage for Quality - Lint ,checkstyle ,PMD ,Findbug
-  - build
+- quality
+- build
 
-#before_script:
-#- export GRADLE_USER_HOME=$(pwd)/.gradle
-#- chmod +x ./gradlew
+before_script:
+- export GRADLE_USER_HOME=$(pwd)/.gradle
+- chmod +x ./gradlew
 
 cache:
   key: ${CI_PROJECT_ID}
   paths:
   - .gradle/
 
+quality:
+  stage: quality
+  script:
+  - ./gradlew customfindbugs
 
-#quality :
- #   stage: quality                                                   # 1. stage Quality
-   # environment: "$Environment"
-
-  #  script:
-   # -  chmod 755 gradlew
-   # - ./gradlew  assembleDEVDebug                          # generate the build (Environment - PROD,STG,DEV)
-   # - ./gradlew  countDEVDebugDexMethods                   # generate the Dex Count (Environment - PROD,STG,DEV)
-    #- ./gradlew  customfindbugs               # command to execute the findbug
-    #- ./gradlew  pmd
-    #- ./gradlew  checkstyle                   # command to execute the checkstyle
-    #artifacts:
-    #  paths:
-      #- app/build/outputs/dexcount/DEVDebug.txt           # path dexcount result
-     # - app/build/outputs/findbugs/findbugs.html                     # path findbugs result
-     # - app/build/outputs/checkstyle/checkstyle.html                 # path checkstyle result
-     # - app/build/outputs/pmd/pmd.html                               # path pmd result
-
-
-build :
-    stage: build
-
-    script:
-    - chmod 755 gradlew
-    - ./gradlew clean
-    - ./gradlew assembledebug
-    artifacts:
-        paths:
-        - app/build/outputs/apk/app-debug.apk
+build:
+  stage: build
+  script:
+  - ./gradlew assembleDebug
+  artifacts:
+    paths:
+    - app/build/outputs/apk/app-debug.apk
