@@ -24,7 +24,6 @@ quality :
     - ./gradlew  --stacktrace assemble checkstyle                   # command to execute the checkstyle
     artifacts:
       paths:
-      - app/build/outputs/dexcount/${Environment}Debug.txt           # path dexcount result
       - app/build/outputs/findbugs/findbugs.html                     # path findbugs result
       - app/build/outputs/checkstyle/checkstyle.html                 # path checkstyle result
       - app/build/outputs/pmd/pmd.html                               # path pmd result
