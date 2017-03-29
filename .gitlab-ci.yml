@@ -23,12 +23,12 @@ quality :
     environment: DEV
     script:
     -  chmod 755 gradlew
-    - ./gradlew  assemble${Environment}Debug                          # generate the build (Environment - PROD,STG,DEV)
-    - ./gradlew  --stacktrace assemble countDEVDebugDexMethods
+    - ./gradlew  assembleDEVDebug                          # generate the build (Environment - PROD,STG,DEV)
+    - ./gradlew  countDEVDebugDexMethods
     - ./gradlew  lintDEVDebug                              # command to execute the lint
-    - ./gradlew  --stacktrace assemble customfindbugs               # command to execute the findbug
-    - ./gradlew  --stacktrace assemble pmd
-    - ./gradlew  --stacktrace assemble checkstyle                   # command to execute the checkstyle
+    - ./gradlew  customfindbugs               # command to execute the findbug
+    - ./gradlew  pmd
+    - ./gradlew  checkstyle                   # command to execute the checkstyle
     - "echo quality: $CI_BUILD_ID >> quality"
     artifacts:
       paths:
@@ -44,7 +44,6 @@ quality :
 
 documentation:
     stage: documentation                                             # 2. documentation stage
-
 
     script:
     - javadoc -d ./javadoc -sourcepath app/src/main/java com.center.ping            # command to generate javadoc
