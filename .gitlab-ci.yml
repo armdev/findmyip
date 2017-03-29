@@ -10,7 +10,7 @@ before_script:
 - chmod +x ./gradlew
 
 cache:
-  key: ${CI_BUILD_NAME}
+  key: ${CI_BUILD_ID}
   paths:
   - .gradle/
   - .gradle/wrapper
@@ -38,7 +38,7 @@ quality :
           - app/build/outputs/checkstyle/checkstyle.html                 # path checkstyle result
           - app/build/outputs/pmd/pmd.html                               # path pmd result
 
-      name: "$CI_BUILD_NAME $(date +%F)"                             # Download file name eg - 'quality_2017-01-13.zip'
+      name: "$CI_BUILD_ID $(date +%F)"                             # Download file name eg - 'quality_2017-01-13.zip'
       expire_in: 1 month                                             # Uploaded artifacts get deleted after 1 month
 
 
@@ -52,13 +52,11 @@ documentation:
       paths:
       - documentation
       - javadoc/*                                # artifacts path for javadoc
-      name: "$CI_BUILD_NAME $(date +%F)"         # Download file name eg - 'documentation_2017-01-13.zip'
+      name: "$CI_BUILD_ID $(date +%F)"         # Download file name eg - 'documentation_2017-01-13.zip'
       expire_in: 1 month                         # Uploaded artifacts get deleted after 1 month
 
 build :
-    stage: build
-    tags:
-     - android-docker
+    stage: build    
     script:
     - chmod 755 gradlew
     - "echo build: $CI_BUILD_ID >> build"
