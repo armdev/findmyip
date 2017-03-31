@@ -1,7 +1,10 @@
 image: jangrewe/gitlab-ci-android
+
 stages:
+- quality
+- documentation                                                    # 2. javadoc documentation
 - build
-- test
+
 before_script:
 - export GRADLE_USER_HOME=$(pwd)/.gradle
 - chmod +x ./gradlew
@@ -15,11 +18,54 @@ cache:
   - build/
   - app/build
 
+quality :
+    stage: quality                                                   # 1. stage Quality
+    environment: DEV
+    script:
+    -  chmod 755 gradlew
+    - ./gradlew  assembleDEVDebug                          # generate the build (Environment - PROD,STG,DEV)
+    - ./gradlew  countDEVDebugDexMethods
+    - ./gradlew  lintDEVDebug                              # command to execute the lint
+    - ./gradlew  customfindbugs               # command to execute the findbug
+    - ./gradlew  pmd
+    - ./gradlew  checkstyle                   # command to execute the checkstyle
+    - "echo quality: $CI_BUILD_ID >> quality"
+    artifacts:
+      paths:
+          - quality/*
+          - app/build/outputs/dexcount/DEVDebug.txt           # path dexcount result
+          - app/build/outputs/findbugs/findbugs.html                     # path findbugs result
+          - app/build/outputs/checkstyle/checkstyle.html                 # path checkstyle result
+          - app/build/outputs/pmd/pmd.html                               # path pmd result
+
+      name: "$CI_BUILD_ID $(date +%F)"                             # Download file name eg - 'quality_2017-01-13.zip'
+      expire_in: 1 month                                             # Uploaded artifacts get deleted after 1 month
+
+
+documentation:
+    stage: documentation                                             # 2. documentation stage
+    dependencies:
+        - quality
+
+    script:
+    - javadoc -d ./javadoc -sourcepath app/src/main/java com.center.ping            # command to generate javadoc
+    - "echo documentation: $CI_BUILD_ID >> documentation"
+    artifacts:
+      paths:
+      - documentation/*
+      - javadoc/*                                # artifacts path for javadoc
+      name: "$CI_BUILD_ID $(date +%F)"         # Download file name eg - 'documentation_2017-01-13.zip'
+      expire_in: 1 month                         # Uploaded artifacts get deleted after 1 month
+
 build :
     stage: build    
+    dependencies:
+    - documentation
     script:
     - chmod 755 gradlew
     - "echo build: $CI_BUILD_ID >> build"
+    - ./gradlew clean
+    #- ./gradlew assembledebug
     - ./gradlew build
     cache:
         paths:
@@ -31,16 +77,5 @@ build :
     artifacts:
         paths:
         - build/*
-
-test:
-  stage: test
-  dependencies: 
-    - build
-  script:
-    - "echo test: $CI_BUILD_ID >> test"   
-    - ls -al
-  artifacts:
-      paths:
-      - test/*
+        - app/build/outputs/apk/app-debug.apk
       
-
