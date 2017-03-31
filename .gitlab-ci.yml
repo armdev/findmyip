@@ -48,7 +48,7 @@ test1 :
     - chmod 755 gradlew
     - "echo test1: $CI_BUILD_ID >> test1"
     #- ./gradlew clean
-    - ls -al test1/
+    - ls -al test/
     - ./gradlew build
     artifacts:
         paths:
