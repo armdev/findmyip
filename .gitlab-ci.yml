@@ -34,7 +34,7 @@ documentation:
 
 build :
     stage: build    
-     dependencies:
+    dependencies:
     - documentation
     script:
     - chmod 755 gradlew
