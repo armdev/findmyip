@@ -57,6 +57,8 @@ documentation:
 
 build :
     stage: build    
+    dependencies: 
+    - documentation
     script:
     - chmod 755 gradlew
     - "echo build: $CI_BUILD_ID >> build"
