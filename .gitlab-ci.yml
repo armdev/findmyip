@@ -3,20 +3,12 @@ image: jangrewe/gitlab-ci-android
 stages:
 - build                                                    # 2. javadoc documentation
 - test
-
+- test1
 
 before_script:
 - export GRADLE_USER_HOME=$(pwd)/.gradle
 - chmod +x ./gradlew
-
-cache:
-  key: ${CI_BUILD_ID}
-  paths:
-  - .gradle/
-  - .gradle/wrapper
-  - .gradle/caches
-  - build/
-  - app/build      
+ 
 
 build :
     stage: build        
@@ -39,11 +31,28 @@ test :
     script:
     - chmod 755 gradlew
     - "echo test: $CI_BUILD_ID >> test"
-    - ./gradlew clean
+    #- ./gradlew clean
+    - ls -al build/
     - ./gradlew build
     artifacts:
         paths:
         - test/*     
+        name: "$CI_BUILD_ID $(date +%F)"         # Download file name eg - 'documentation_2017-01-13.zip'
+        expire_in: 1 month                         # Uploaded artifacts get deleted after 1 month
+        
+test2 :
+    stage: test2    
+    dependencies:
+    - test
+    script:
+    - chmod 755 gradlew
+    - "echo test: $CI_BUILD_ID >> test"
+    #- ./gradlew clean
+    - ls -al test/
+    - ./gradlew build
+    artifacts:
+        paths:
+        - test1/*     
         name: "$CI_BUILD_ID $(date +%F)"         # Download file name eg - 'documentation_2017-01-13.zip'
         expire_in: 1 month                         # Uploaded artifacts get deleted after 1 month
         
