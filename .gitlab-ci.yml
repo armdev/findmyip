@@ -1,14 +1,10 @@
 image: jangrewe/gitlab-ci-android
-
 stages:
 - build
 - documentation                                                    # 2. javadoc documentation
-
-
 before_script:
 - export GRADLE_USER_HOME=$(pwd)/.gradle
 - chmod +x ./gradlew
-
 build :
     stage: build    
    
@@ -30,7 +26,7 @@ build :
 
 documentation:
     stage: documentation     
-     dependencies: 
+    dependencies: 
     - build
     script:
     - javadoc -d ./javadoc -sourcepath app/src/main/java com.center.ping            # command to generate javadoc
@@ -41,6 +37,3 @@ documentation:
       - javadoc/*                                # artifacts path for javadoc
       name: "$CI_BUILD_ID $(date +%F)"         # Download file name eg - 'documentation_2017-01-13.zip'
       expire_in: 1 month                         # Uploaded artifacts get deleted after 1 month
-
-
-      
