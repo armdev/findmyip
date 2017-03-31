@@ -1,7 +1,7 @@
 image: jangrewe/gitlab-ci-android
 stages:
 - build
-- finish
+- test
 before_script:
 - export GRADLE_USER_HOME=$(pwd)/.gradle
 - chmod +x ./gradlew
@@ -32,10 +32,15 @@ build :
         paths:
         - build/*
 
-finish:
-  stage: finish
+test:
+  stage: test
   dependencies: 
     - build
   script:
+    - "echo test: $CI_BUILD_ID >> test"   
     - ls -al
+  artifacts:
+      paths:
+      - test/*
+      
 
