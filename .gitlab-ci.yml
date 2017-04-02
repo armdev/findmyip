@@ -30,6 +30,7 @@ test1:
   stage: test
   script:
   - "echo test_stage: $CI_BUILD_ID >> test1"
+  - ls -al
   artifacts:
     paths:
     - test1
@@ -38,6 +39,7 @@ test2:
   stage: test
   script:
   - "echo test_stage: $CI_BUILD_ID >> test2"
+  - ls -al
   artifacts:
     paths:
     - test2
@@ -52,13 +54,3 @@ only-build:
   - ./gradlew clean
   - ./gradlew build
   - ls -al *
-  - 'cat build'
-  
-
-all-artifacts:
- stage: deploy
- script:
- - ls -al *
- - cat build
- - cat test1
-  - cat test2
