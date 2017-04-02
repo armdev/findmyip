@@ -51,6 +51,9 @@ only-build:
   script:
   - chmod 755 gradlew
   - "echo deploy : $CI_BUILD_ID >> deploy"
-  - ./gradlew clean
-  - ./gradlew build
-  - ls -al *
+  ###- ./gradlew clean
+  ###- ./gradlew build
+  - ls -al test1
+  - ls -al test2
+  - ls -al build
+  
