@@ -1,7 +1,7 @@
 image: jangrewe/gitlab-ci-android
 
 stages:
-- build                                                    # 2. javadoc documentation
+- build
 - test
 - deploy
 
@@ -23,9 +23,9 @@ build:
     name: "build-artifacts-${CI_BUILD_REF}"
     paths:
     - build
-    name: "$CI_BUILD_ID $(date +%F)"         # Download file name eg - 'documentation_2017-01-13.zip'
-    expire_in: 1 month                         # Uploaded artifacts get deleted after 1 month
-
+    name: "$CI_BUILD_ID $(date +%F)"
+    expire_in: 1 month            
+    
 test1:
   stage: test
   script:
@@ -53,13 +53,12 @@ only-build:
   - ./gradlew build
   - ls -al *
   - 'cat build'
- 
- all-artifacts:
-  stage: deploy
-  script:
-  - ls -al *
-  - cat build
-  - cat test1
-  - cat test2
+  
 
-    
+all-artifacts:
+ stage: deploy
+ script:
+ - ls -al *
+ - cat build
+ - cat test1
+  - cat test2
