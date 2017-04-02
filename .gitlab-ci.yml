@@ -2,7 +2,6 @@ image: jangrewe/gitlab-ci-android
 
 stages:
 - build
-- test
 - deploy
 
 before_script:
@@ -14,7 +13,7 @@ build:
   script:
   - chmod 755 gradlew
   - "echo build_stage: $CI_BUILD_ID >> build"
-  - ./gradlew clean
+  #- ./gradlew clean
   - ./gradlew build
   cache:
     paths:
@@ -24,25 +23,8 @@ build:
     paths:
     - build
     name: "$CI_BUILD_ID $(date +%F)"
-    expire_in: 1 month            
-    
-test1:
-  stage: test
-  script:
-  - "echo test_stage: $CI_BUILD_ID >> test1"
-  - ls -al
-  artifacts:
-    paths:
-    - test1
+    expire_in: 1 month 
 
-test2:
-  stage: test
-  script:
-  - "echo test_stage: $CI_BUILD_ID >> test2"
-  - ls -al
-  artifacts:
-    paths:
-    - test2
 
 only-build:
   stage: deploy
@@ -50,10 +32,8 @@ only-build:
   - build
   script:
   - chmod 755 gradlew
-  - "echo deploy : $CI_BUILD_ID >> deploy"
   ###- ./gradlew clean
   ###- ./gradlew build
-  - ls -al test1
-  - ls -al test2
-  - ls -al build
+   - ls -al *   
+   - 'cat build'
   
