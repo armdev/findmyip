@@ -3,56 +3,63 @@ image: jangrewe/gitlab-ci-android
 stages:
 - build                                                    # 2. javadoc documentation
 - test
-- test1
+- deploy
 
 before_script:
 - export GRADLE_USER_HOME=$(pwd)/.gradle
 - chmod +x ./gradlew
  
-
-build :
-    stage: build        
-    script:
-    - chmod 755 gradlew
-    - "echo build: $CI_BUILD_ID >> build"
-    - ./gradlew clean
-    - ./gradlew build
-    artifacts:
-        paths:
-        - build/*
-        - app/build/outputs/apk/app-debug.apk
-        name: "$CI_BUILD_ID $(date +%F)"         # Download file name eg - 'documentation_2017-01-13.zip'
-        expire_in: 1 month                         # Uploaded artifacts get deleted after 1 month
-
-test :
-    stage: test    
-    dependencies:
+build:
+  stage: build
+  script:
+  - chmod 755 gradlew
+  - "echo build_stage: $CI_BUILD_ID >> build"
+  - ./gradlew clean
+  - ./gradlew build
+  cache:
+    paths:
     - build
-    script:
-    - chmod 755 gradlew
-    - "echo test: $CI_BUILD_ID >> test"
-    #- ./gradlew clean
-    - ls -al build/
-    - ./gradlew build
-    artifacts:
-        paths:
-        - test/*     
-        name: "$CI_BUILD_ID $(date +%F)"         # Download file name eg - 'documentation_2017-01-13.zip'
-        expire_in: 1 month                         # Uploaded artifacts get deleted after 1 month
-        
-test1 :
-    stage: test1    
-    dependencies:
-    - test
-    script:
-    - chmod 755 gradlew
-    - "echo test1: $CI_BUILD_ID >> test1"
-    #- ./gradlew clean
-    - ls -al test/
-    - ./gradlew build
-    artifacts:
-        paths:
-        - test1/*     
-        name: "$CI_BUILD_ID $(date +%F)"         # Download file name eg - 'documentation_2017-01-13.zip'
-        expire_in: 1 month                         # Uploaded artifacts get deleted after 1 month
-        
+  artifacts:
+    name: "build-artifacts-${CI_BUILD_REF}"
+    paths:
+    - build
+    name: "$CI_BUILD_ID $(date +%F)"         # Download file name eg - 'documentation_2017-01-13.zip'
+    expire_in: 1 month                         # Uploaded artifacts get deleted after 1 month
+
+test1:
+  stage: test
+  script:
+  - "echo test_stage: $CI_BUILD_ID >> test1"
+  artifacts:
+    paths:
+    - test1
+
+test2:
+  stage: test
+  script:
+  - "echo test_stage: $CI_BUILD_ID >> test2"
+  artifacts:
+    paths:
+    - test2
+
+only-build:
+  stage: deploy
+  dependencies:
+  - build
+  script:
+  - chmod 755 gradlew
+  - "echo deploy : $CI_BUILD_ID >> deploy"
+  - ./gradlew clean
+  - ./gradlew build
+  - ls -al *
+  - 'cat build'
+ 
+ all-artifacts:
+  stage: deploy
+  script:
+  - ls -al *
+  - cat build
+  - cat test1
+  - cat test2
+
+    
