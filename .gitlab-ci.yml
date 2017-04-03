@@ -13,7 +13,7 @@ build:
   script:
   - chmod 755 gradlew
   - "echo build_stage: $CI_BUILD_ID >> build"
-  #- ./gradlew clean
+  - ./gradlew clean
   - ./gradlew build
   cache:
     paths:
@@ -32,8 +32,8 @@ only-build:
   - build
   script:
   - chmod 755 gradlew
-  ###- ./gradlew clean
-  ###- ./gradlew build
+  - ./gradlew clean
+  - ./gradlew build
   - ls -al *   
   - 'cat build'
   
