@@ -15,6 +15,7 @@ build:
   - "echo build_stage: $CI_BUILD_ID >> build"
   - ./gradlew clean
   - ./gradlew build
+  - 'ls -al build'
   cache:
     paths:
     - build
@@ -32,5 +33,5 @@ only-build:
   - build
   script:
   - ls -al *   
-  - 'cat build'
+  - 'ls -al build'
   
