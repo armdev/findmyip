@@ -31,9 +31,6 @@ only-build:
   dependencies:
   - build
   script:
-  - chmod 755 gradlew
-  - ./gradlew clean
-  - ./gradlew build
   - ls -al *   
   - 'cat build'
   
